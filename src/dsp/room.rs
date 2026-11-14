@@ -43,7 +43,6 @@ pub struct RoomBus {
     mask: usize,
     w: usize,
     taps: [Tap; TAP_COUNT],
-    level: f32,
 }
 
 impl RoomBus {
@@ -55,7 +54,6 @@ impl RoomBus {
             mask: size - 1,
             w: 0,
             taps: [Tap::default(); TAP_COUNT],
-            level: 0.0,
         }
     }
 
@@ -93,7 +91,6 @@ impl RoomBus {
 
     pub fn set_level(&mut self, room_db: f32, active: bool) {
         let lvl = if active { room_db } else { -200.0 };
-        self.level = lvl;
         let rel0 = TAP_REL_DB[0];
         for (i, t) in self.taps.iter_mut().enumerate() {
             t.gain = 10f32.powf(((lvl as f64 + TAP_REL_DB[i] - rel0) / 20.0) as f32);
@@ -126,7 +123,6 @@ impl RoomBus {
         }
 
         self.w = (self.w + 1) & mask;
-        let _ = self.level;
         (ol, or)
     }
 }

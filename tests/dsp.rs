@@ -72,10 +72,14 @@ fn shelf_dc_gain_is_exactly_unity() {
 
 #[test]
 fn shelf_pole_is_stable() {
+    use pairfield::dsp::shelf::Shelf1;
     for fs in [44100.0, 48000.0, 192000.0] {
-        for ap in [0.4, 0.7, 1.0, 1.5, 2.0] {
-            for az in [0.1, 0.5, 1.0, 2.0] {
-                // pole magnitude is |a1|; the shelf is first order so this is the radius
+        for ap in [0.1, 0.4, 0.7, 1.0, 1.5, 2.0] {
+            for az in [0.02, 0.1, 0.5, 1.0, 2.0, 4.0] {
+                let mut s = Shelf1::default();
+                s.set(az, ap, HEAD_W0, fs);
+                let r = s.pole_radius();
+                assert!(r < 1.0, "fs {fs} az {az} ap {ap} -> pole radius {r}");
                 let m = shelf_mag(az, ap, HEAD_W0, fs, 0.0);
                 assert!(m.is_finite() && m > 0.0);
             }
@@ -112,7 +116,7 @@ fn group_delay(ir: &[f32], f: f64, fs: f64) -> f64 {
     -d * fs / (2.0 * std::f64::consts::PI)
 }
 
-fn cross_ir(c: &mut CrossPath, deg: f64, fs: f64, n: usize) -> Vec<f32> {
+fn cross_ir(c: &mut CrossPath, _deg: f64, _fs: f64, n: usize) -> Vec<f32> {
     let mut ir = vec![0.0f32; n];
     ir[0] = 1.0;
     for x in ir.iter_mut() {

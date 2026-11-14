@@ -34,22 +34,6 @@ impl Shelf1 {
         self.a1.abs()
     }
 
-    /// Coefficient access for the GUI's frequency-response drawing.
-    pub fn coeffs(&self) -> (f32, f32, f32) {
-        (self.b0, self.b1, self.a1)
-    }
-
-    /// Magnitude at `f`, for the editor only (never called from `process`).
-    pub fn magnitude_at(&self, f: f64, fs: f64) -> f64 {
-        let w = 2.0 * std::f64::consts::PI * f / fs;
-        let (sn, cs) = (-w).sin_cos();
-        let num = (self.b0 as f64) + (self.b1 as f64) * cs;
-        let num_i = (self.b1 as f64) * sn;
-        let den = 1.0 + (self.a1 as f64) * cs;
-        let den_i = (self.a1 as f64) * sn;
-        ((num * num + num_i * num_i) / (den * den + den_i * den_i)).sqrt()
-    }
-
     #[inline]
     pub fn step(&mut self, x: f32) -> f32 {
         let y = self.b0 * x + self.z;
