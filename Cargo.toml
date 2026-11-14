@@ -1,0 +1,19 @@
+[package]
+name = "pairfield"
+version = "0.1.0"
+edition = "2021"
+description = "Binaural crossfeed and virtual-monitor stage for open-back headphones"
+license = "ISC"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+nice-plug = { version = "0.4.2", features = ["vst3"] }
+nice-plug-egui = "0.6.0"
+egui = "0.37"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+opt-level = 3
