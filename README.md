@@ -87,3 +87,9 @@ The editor target in that SDK needs X11 headers; drop
 - No individualised HRTF. The model is a sphere of radius 8.75 cm — deliberately, because
   a mastering tool has to be neutral for everyone.
 - Torso, shoulder and pinna are not modelled (`ARCHITECTURE.md` §11).
+
+## Licence
+
+ISC — see [`LICENSE`](LICENSE). Use it, fork it, ship it in a commercial build; keep the
+copyright notice. The release bundles are built from this source by
+`.github/workflows/release.yml`.
