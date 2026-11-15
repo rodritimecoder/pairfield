@@ -65,13 +65,15 @@ jobs:
       - name: Build VST3 + CLAP bundles
         run: cargo nice-plug ${{ matrix.bundler }} pairfield --release
 
+      # Relative output path on purpose: GNU tar treats the `D:` of a Windows
+      # absolute path as a remote host ("Cannot connect to D:").
       - name: Package
         shell: bash
         run: |
           mkdir -p dist
-          cd target/bundled
-          find . -maxdepth 3 -type f | sort
-          tar -czf "$GITHUB_WORKSPACE/dist/pairfield-${{ matrix.name }}.tar.gz" .
+          tar -czf "dist/pairfield-${{ matrix.name }}.tar.gz" -C target/bundled .
+          ls -lh dist
+          tar -tzf "dist/pairfield-${{ matrix.name }}.tar.gz"
 
       - uses: actions/upload-artifact@v4
         with:
