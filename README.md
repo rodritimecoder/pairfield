@@ -20,6 +20,16 @@ so that the filter's own phase delivers Kuhn's 3:2 low/high ITD ratio exactly (m
 a deep null on the centre for a shallow one on the sides — and at 100 % makes dead-centre
 mono bit-identical to bypass.
 
+## Install from a release
+
+Prebuilt bundles are attached to every tagged release (Linux x86_64, macOS universal,
+Windows x86_64):
+
+https://github.com/rodritimecoder/pairfield/releases
+
+Unpack into `~/.vst3` and `~/.clap` (Linux), `~/Library/Audio/Plug-Ins/{VST3,CLAP}` (macOS),
+or `%COMMONPROGRAMFILES%\VST3` and `%LOCALAPPDATA%\Programs\Common\CLAP` (Windows).
+
 ## Build
 
 Requires Rust 1.88+, a C toolchain, and (for the editor) an OpenGL-capable desktop.
