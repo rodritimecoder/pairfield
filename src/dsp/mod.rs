@@ -8,8 +8,8 @@ pub mod shelf;
 pub mod thiran;
 
 use cross::CrossPath;
-use room::RoomBus;
 use rms::RmsMatcher;
+use room::RoomBus;
 use shelf::Shelf1;
 
 use std::f64::consts::PI;

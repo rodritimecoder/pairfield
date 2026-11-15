@@ -12,7 +12,8 @@ fn tf(ir: &[f32], f: f64) -> (f64, f64) {
         im += (*x as f64) * s;
         let ns = s * cw + c * sw;
         let nc = c * cw - s * sw;
-        s = ns; c = nc;
+        s = ns;
+        c = nc;
     }
     (re, im)
 }
@@ -21,8 +22,12 @@ fn gd(ir: &[f32], f: f64) -> f64 {
     let (r1, i1) = tf(ir, f + 0.5);
     let (r0, i0) = tf(ir, f - 0.5);
     let mut d = i1.atan2(r1) - i0.atan2(r0);
-    while d > std::f64::consts::PI { d -= 2.0*std::f64::consts::PI; }
-    while d < -std::f64::consts::PI { d += 2.0*std::f64::consts::PI; }
+    while d > std::f64::consts::PI {
+        d -= 2.0 * std::f64::consts::PI;
+    }
+    while d < -std::f64::consts::PI {
+        d += 2.0 * std::f64::consts::PI;
+    }
     -d * FS / (2.0 * std::f64::consts::PI)
 }
 
@@ -33,7 +38,9 @@ fn main() {
         c.set(deg, FS);
         let mut ir = vec![0.0f32; 1024];
         ir[0] = 1.0;
-        for x in ir.iter_mut() { *x = c.step(*x); }
+        for x in ir.iter_mut() {
+            *x = c.step(*x);
+        }
         let nominal = woodworth_delay_s(deg) * FS;
         println!("{deg:>5.1} deg  nominal {nominal:>7.3}  measured@16k {:>7.3}  measured@8k  {:>7.3}  peak idx {:?}",
             gd(&ir, 16000.0), gd(&ir, 8000.0),

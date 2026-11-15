@@ -201,7 +201,9 @@ fn centre_focus_one_is_bit_transparent_for_mono() {
     let mut dsp = PairfieldDsp::new(FS);
     dsp.reset();
     dsp.set_params(&p);
-    let src: Vec<f32> = (0..2048).map(|i| ((i as f32) * 0.017).sin() * 0.5).collect();
+    let src: Vec<f32> = (0..2048)
+        .map(|i| ((i as f32) * 0.017).sin() * 0.5)
+        .collect();
     let mut l = src.clone();
     let mut r = src.clone();
     dsp.process_block(&mut l, &mut r, &p);

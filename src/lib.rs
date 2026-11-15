@@ -138,7 +138,10 @@ impl Plugin for Pairfield {
                 .room_level
                 .smoothed
                 .next_block(&mut room_buf[..len], len);
-            self.params.air.smoothed.next_block(&mut air_buf[..len], len);
+            self.params
+                .air
+                .smoothed
+                .next_block(&mut air_buf[..len], len);
 
             // Coefficients are refreshed from the value at the start of the chunk; the gains
             // inside the chunk therefore step by at most 1/75 of a full knob sweep.
@@ -153,7 +156,8 @@ impl Plugin for Pairfield {
                 bypass,
             };
             self.dsp.set_params(&p);
-            self.dsp.process_block(&mut left[pos..pos + len], &mut right[pos..pos + len], &p);
+            self.dsp
+                .process_block(&mut left[pos..pos + len], &mut right[pos..pos + len], &p);
 
             pos += len;
         }

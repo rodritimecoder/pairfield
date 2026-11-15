@@ -73,7 +73,11 @@ impl PairfieldEditor {
                 ui.label(
                     egui::RichText::new(format!("auto {g:+.1} dB"))
                         .font(FontId::monospace(11.0))
-                        .color(if self.params.auto_gain.value() { CROSS } else { DIM }),
+                        .color(if self.params.auto_gain.value() {
+                            CROSS
+                        } else {
+                            DIM
+                        }),
                 );
             });
         });
@@ -91,9 +95,14 @@ impl PairfieldEditor {
         // ---- controls
         let row = |ui: &mut egui::Ui, label: &str, param: &FloatParam, setter: &ParamSetter| {
             ui.horizontal(|ui| {
-                ui.add_sized([118.0, 16.0], egui::Label::new(
-                    egui::RichText::new(label).font(FontId::monospace(10.5)).color(DIM),
-                ));
+                ui.add_sized(
+                    [118.0, 16.0],
+                    egui::Label::new(
+                        egui::RichText::new(label)
+                            .font(FontId::monospace(10.5))
+                            .color(DIM),
+                    ),
+                );
                 ui.add_sized(
                     [ui.available_width() - 86.0, 16.0],
                     ParamSlider::for_param(param, setter),
@@ -108,9 +117,14 @@ impl PairfieldEditor {
 
         ui.add_space(2.0);
         ui.horizontal(|ui| {
-            ui.add_sized([118.0, 16.0], egui::Label::new(
-                egui::RichText::new("room").font(FontId::monospace(10.5)).color(DIM),
-            ));
+            ui.add_sized(
+                [118.0, 16.0],
+                egui::Label::new(
+                    egui::RichText::new("room")
+                        .font(FontId::monospace(10.5))
+                        .color(DIM),
+                ),
+            );
             let mut on = self.params.room_on.value();
             if ui
                 .add(egui::Checkbox::without_text(&mut on))
@@ -181,7 +195,11 @@ impl PairfieldEditor {
 
         painter.circle_stroke(center, ring_r, Stroke::new(1.0, GRID));
         painter.circle_filled(center, head_r, Color32::from_rgb(35, 38, 44));
-        painter.circle_stroke(center, head_r, Stroke::new(1.0, Color32::from_rgb(70, 75, 85)));
+        painter.circle_stroke(
+            center,
+            head_r,
+            Stroke::new(1.0, Color32::from_rgb(70, 75, 85)),
+        );
         // nose
         painter.add(egui::Shape::convex_polygon(
             vec![
@@ -295,7 +313,14 @@ impl PairfieldEditor {
             let y = fy(db);
             painter.line_segment(
                 [egui::pos2(plot.left(), y), egui::pos2(plot.right(), y)],
-                Stroke::new(if db == 0.0 { 1.0 } else { 0.7 }, if db == 0.0 { Color32::from_rgb(70, 75, 85) } else { GRID }),
+                Stroke::new(
+                    if db == 0.0 { 1.0 } else { 0.7 },
+                    if db == 0.0 {
+                        Color32::from_rgb(70, 75, 85)
+                    } else {
+                        GRID
+                    },
+                ),
             );
             painter.text(
                 egui::pos2(plot.left() - 4.0, y),

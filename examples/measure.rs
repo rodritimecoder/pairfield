@@ -30,8 +30,8 @@ unsafe impl GlobalAlloc for Counting {
 static ALLOCATOR: Counting = Counting;
 
 use pairfield::dsp::{
-    alpha_pair, cross::CrossPath, woodworth_delay_s, DspParams,
-    PairfieldDsp, HEAD_RADIUS, C_SOUND, HEAD_W0,
+    alpha_pair, cross::CrossPath, woodworth_delay_s, DspParams, PairfieldDsp, C_SOUND, HEAD_RADIUS,
+    HEAD_W0,
 };
 
 const N_IR: usize = 4096;
@@ -48,7 +48,12 @@ impl Report {
         if !ok {
             self.fails += 1;
         }
-        println!("  [{}] {:<46} {}", if ok { "PASS" } else { "FAIL" }, name, detail);
+        println!(
+            "  [{}] {:<46} {}",
+            if ok { "PASS" } else { "FAIL" },
+            name,
+            detail
+        );
     }
 }
 
@@ -111,7 +116,8 @@ fn render_matrix(p: &DspParams, fs: f64) -> Matrix {
         [vec![0.0; N_IR], vec![0.0; N_IR]],
         [vec![0.0; N_IR], vec![0.0; N_IR]],
     ];
-    for input in 0..2 {
+    let [row0, row1] = &mut h;
+    for (input, (out_l, out_r)) in row0.iter_mut().zip(row1.iter_mut()).enumerate() {
         dsp.reset();
         dsp.set_params(p);
         let mut l = vec![0.0f32; N_IR];
@@ -122,8 +128,8 @@ fn render_matrix(p: &DspParams, fs: f64) -> Matrix {
             r[0] = 1.0;
         }
         dsp.process_block(&mut l, &mut r, p);
-        h[0][input] = l;
-        h[1][input] = r;
+        *out_l = l;
+        *out_r = r;
     }
     Matrix { h }
 }
@@ -164,7 +170,10 @@ impl Matrix {
 }
 
 fn main() {
-    let mut rep = Report { fails: 0, checks: 0 };
+    let mut rep = Report {
+        fails: 0,
+        checks: 0,
+    };
 
     println!("pairfield - offline measurement harness");
     println!(
@@ -234,7 +243,10 @@ fn main() {
 
     // ---------- 4. comb budget ----------
     println!("\n4. Comb budget: worst null over all pan positions (centred is the worst case)");
-    println!("     {:>4} {:>5} {:>11} {:>11} {:>11}", "az", "k", "centre", "worst-pan", "analytic");
+    println!(
+        "     {:>4} {:>5} {:>11} {:>11} {:>11}",
+        "az", "k", "centre", "worst-pan", "analytic"
+    );
     for angle in [15.0, 30.0, 45.0, 60.0] {
         for k in [0.0, 0.5, 1.0] {
             let p = DspParams {
@@ -303,7 +315,9 @@ fn main() {
         dsp.process_block(&mut l, &mut r, &p);
         let mut max_err = 0.0f32;
         for i in 0..4096 {
-            max_err = max_err.max((l[i] - orig[i]).abs()).max((r[i] - orig[i]).abs());
+            max_err = max_err
+                .max((l[i] - orig[i]).abs())
+                .max((r[i] - orig[i]).abs());
         }
         rep.check(
             "  |wet - dry| for L == R",
@@ -326,7 +340,11 @@ fn main() {
         dsp.process_block(&mut l, &mut r, &p);
         let identical = l.iter().zip(&l0).all(|(a, b)| a.to_bits() == b.to_bits())
             && r.iter().zip(&r0).all(|(a, b)| a.to_bits() == b.to_bits());
-        rep.check("  output == input, bit for bit", identical, "1024 frames".into());
+        rep.check(
+            "  output == input, bit for bit",
+            identical,
+            "1024 frames".into(),
+        );
     }
 
     // ---------- 7. level matching ----------
@@ -376,7 +394,10 @@ fn main() {
         rep.check(
             &format!("  {label} level match"),
             err_db.abs() < 0.5,
-            format!("{err_db:+.2} dB (auto gain {:.2} dB)", 20.0 * dsp.auto_gain().log10()),
+            format!(
+                "{err_db:+.2} dB (auto gain {:.2} dB)",
+                20.0 * dsp.auto_gain().log10()
+            ),
         );
     }
 
@@ -427,7 +448,11 @@ fn main() {
             bad == 0,
             format!("{bad} bad samples"),
         );
-        rep.check("  no subnormal output", sub == 0, format!("{sub} subnormals"));
+        rep.check(
+            "  no subnormal output",
+            sub == 0,
+            format!("{sub} subnormals"),
+        );
     }
 
     // ---------- 9. real-time safety ----------
@@ -465,7 +490,11 @@ fn main() {
         "{} checks, {} failed  ->  {}",
         rep.checks,
         rep.fails,
-        if rep.fails == 0 { "ALL PASS" } else { "FAILURES" }
+        if rep.fails == 0 {
+            "ALL PASS"
+        } else {
+            "FAILURES"
+        }
     );
     if rep.fails > 0 {
         std::process::exit(1);
